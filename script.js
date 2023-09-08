@@ -1,13 +1,5 @@
 
 function getSquareVertices(center, diameter){
-    console.log([
-        center[0] - diameter/2, center[1] + diameter/2,
-        center[0] + diameter/2, center[1] - diameter/2,
-        center[0] + diameter/2, center[1] + diameter/2,
-        center[0] - diameter/2, center[1] + diameter/2,
-        center[0] - diameter/2, center[1] - diameter/2,
-        center[0] + diameter/2, center[1] - diameter/2
-    ])
     return [
         center[0] - diameter/2, center[1] + diameter/2,
         center[0] + diameter/2, center[1] - diameter/2,
@@ -19,7 +11,7 @@ function getSquareVertices(center, diameter){
 }
 
 function getNewCenters(originalCenter, originalDiameter){
-    return [
+    let newCenters = [
         originalCenter[0] - originalDiameter, originalCenter[1] + originalDiameter,
         originalCenter[0], originalCenter[1] + originalDiameter,
         originalCenter[0] + originalDiameter, originalCenter[1] + originalDiameter,
@@ -29,6 +21,8 @@ function getNewCenters(originalCenter, originalDiameter){
         originalCenter[0], originalCenter[1] - originalDiameter,
         originalCenter[0] + originalDiameter, originalCenter[1] - originalDiameter,
     ]
+
+    return newCenters;
 }
 
 const canvas = document.querySelector('#c');
@@ -69,20 +63,37 @@ gl.useProgram(shaderProgram);
 
 const squaresDiameter1 = 0.667;
 const squareCenters1 = [0, 0];
-
 let vertices = getSquareVertices(squareCenters1, squaresDiameter1);
 
 const squaresDiameter2 = squaresDiameter1 / 3;
 const squareCenters2 = getNewCenters(squareCenters1, squaresDiameter1);
-
-for(i = 0; i < squareCenters2.length; i+=2){
-    let center = [squareCenters2[i], squareCenters2[i+1]];
-    let vertices2 = getSquareVertices(center, squaresDiameter2);
-    vertices = vertices.concat(vertices2);
-    console.log(vertices)
+for(let i = 0; i < squareCenters2.length; i += 2){
+    const tempCenter = [squareCenters2[i], squareCenters2[i + 1]];
+    vertices = vertices.concat(getSquareVertices(tempCenter, squaresDiameter2))
 }
 
-console.log(vertices);
+const squaresDiameter3 = squaresDiameter2 / 3;
+let squareCenters3 = [];
+for(let i = 0; i < squareCenters2.length; i += 2){
+    const tempCenter = [squareCenters2[i], squareCenters2[i + 1]];
+    squareCenters3 = squareCenters3.concat(getNewCenters(tempCenter, squaresDiameter2));
+}
+for(let i = 0; i < squareCenters3.length; i += 2){
+    const tempCenter = [squareCenters3[i], squareCenters3[i + 1]];
+    vertices = vertices.concat(getSquareVertices(tempCenter, squaresDiameter3))
+}
+
+const squaresDiameter4 = squaresDiameter3 / 3;
+let squareCenters4 = [];
+for(let i = 0; i < squareCenters3.length; i += 2){
+    const tempCenter = [squareCenters3[i], squareCenters3[i + 1]];
+    squareCenters4 = squareCenters4.concat(getNewCenters(tempCenter, squaresDiameter3));
+}
+for(let i = 0; i < squareCenters4.length; i += 2){
+    const tempCenter = [squareCenters4[i], squareCenters4[i + 1]];
+    vertices = vertices.concat(getSquareVertices(tempCenter, squaresDiameter4))
+}
+
 
 gl.clearColor(0.0, 0.0, 0.0, 1.0);
 gl.clear(gl.COLOR_BUFFER_BIT);
