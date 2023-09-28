@@ -1,24 +1,42 @@
 <html>
   <head>
     <style>
-      *{
-        box-sizing: 0;
+      * {
+        box-sizing: border-box;
         margin: 0;
         padding: 0;
       }
-      body {
+      #container {
         align-items: center;
         display: flex;
         justify-content: center;
         height: 100vh;
         width: 100vw;
         background-color: #333;
+        position: relative; /* Make the container a positioning context */
+      }
+
+      #c {
+        position: absolute;
+        z-index: 2;
+        pointer-events: none;
+      }
+
+      #stepSlider {
+        position: absolute;
+        z-index: 3;
+        color: white;
+        font-size: 24px;
+        top: calc(50% - 480px); 
+        right: calc(50% - 480px); 
       }
     </style>
   </head>
   <body>
-    <canvas id="c" height="1000" width="1000"></canvas>
+    <div id="container">
+      <canvas id="c" height="1000" width="1000"></canvas>
+      <input type="range" min="1" max="7" value="1" class="slider" id="stepSlider">
+    </div>    
   </body>
   <script src="script.js"></script>
 </html>
-

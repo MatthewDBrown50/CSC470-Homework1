@@ -53,40 +53,47 @@ function drawSierpinski(center, diameter, steps) {
     return vertices;
 }
 
-const vertexShader = gl.createShader(gl.VERTEX_SHADER);
-gl.shaderSource(vertexShader, vertexShaderSource);
-gl.compileShader(vertexShader);
+function redraw(numberOfSteps){
+    let paragraphEl = document.getElementById('overlay');
 
-const fragmentShader = gl.createShader(gl.FRAGMENT_SHADER);
-gl.shaderSource(fragmentShader, fragmentShaderSource);
-gl.compileShader(fragmentShader);
+    const vertexShader = gl.createShader(gl.VERTEX_SHADER);
+    gl.shaderSource(vertexShader, vertexShaderSource);
+    gl.compileShader(vertexShader);
 
-const shaderProgram = gl.createProgram();
-gl.attachShader(shaderProgram, vertexShader);
-gl.attachShader(shaderProgram, fragmentShader);
-gl.linkProgram(shaderProgram);
+    const fragmentShader = gl.createShader(gl.FRAGMENT_SHADER);
+    gl.shaderSource(fragmentShader, fragmentShaderSource);
+    gl.compileShader(fragmentShader);
 
-gl.useProgram(shaderProgram);
+    const shaderProgram = gl.createProgram();
+    gl.attachShader(shaderProgram, vertexShader);
+    gl.attachShader(shaderProgram, fragmentShader);
+    gl.linkProgram(shaderProgram);
 
-const initialSquareLength = 2.0;
-const initialSquareCenter = [0, 0];
-const numberOfSteps = 5; // Manipulate this to adjust the number of steps in the carpet
-const vertices = drawSierpinski(initialSquareCenter, initialSquareLength, numberOfSteps);
+    gl.useProgram(shaderProgram);
 
-gl.clearColor(0.0, 0.0, 0.0, 1.0);
-gl.clear(gl.COLOR_BUFFER_BIT);
+    const initialSquareLength = 2.0;
+    const initialSquareCenter = [0, 0];
+    const vertices = drawSierpinski(initialSquareCenter, initialSquareLength, numberOfSteps);
 
-// Add vertices to draw
-const vertexBuffer = gl.createBuffer();
-gl.bindBuffer(gl.ARRAY_BUFFER, vertexBuffer);
-gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(vertices), gl.STATIC_DRAW);
+    gl.clearColor(0.0, 0.0, 0.0, 1.0);
+    gl.clear(gl.COLOR_BUFFER_BIT);
 
-const aPositionLocation = gl.getAttribLocation(shaderProgram, 'aPosition');
-gl.enableVertexAttribArray(aPositionLocation);
-gl.vertexAttribPointer(aPositionLocation, 2, gl.FLOAT, false, 0, 0);
+    // Add vertices to draw
+    const vertexBuffer = gl.createBuffer();
+    gl.bindBuffer(gl.ARRAY_BUFFER, vertexBuffer);
+    gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(vertices), gl.STATIC_DRAW);
 
-// Set color for all vertices to share
-const uColorLocation = gl.getUniformLocation(shaderProgram, 'uColor');
-gl.uniform4fv(uColorLocation, [0.2, 0.6, 0.9, 1.0]); 
+    const aPositionLocation = gl.getAttribLocation(shaderProgram, 'aPosition');
+    gl.enableVertexAttribArray(aPositionLocation);
+    gl.vertexAttribPointer(aPositionLocation, 2, gl.FLOAT, false, 0, 0);
 
-gl.drawArrays(gl.TRIANGLES, 0, vertices.length / 2);
+    // Set color for all vertices to share
+    const uColorLocation = gl.getUniformLocation(shaderProgram, 'uColor');
+    gl.uniform4fv(uColorLocation, [0.2, 0.6, 0.9, 1.0]); 
+
+    gl.drawArrays(gl.TRIANGLES, 0, vertices.length / 2);
+
+    document.getElementById('container').appendChild(paragraphEl);
+}
+
+redraw(2);
